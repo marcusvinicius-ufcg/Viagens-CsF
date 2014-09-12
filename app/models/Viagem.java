@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import com.google.common.base.Objects;
 
 /**
  * Classe Representa uma viagem no sistema.
@@ -260,7 +261,7 @@ public class Viagem implements Comparable<Viagem>{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(data, estrategia, local);
+		return Objects.hashCode(data, estrategia, local);
 	}
 
 	@Override
