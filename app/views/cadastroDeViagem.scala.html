@@ -1,0 +1,88 @@
+@(titulo:String, usuario: models.Usuario, viagem : Form[models.Viagem])
+
+@import helper._
+
+@main(titulo, usuario){
+
+<div class="container">
+	<div class="row">
+
+		<div class="panel panel-default">
+
+			<div class="panel-heading">
+				<h4>Cadastrar uma nova Viagem</h4>
+			</div>
+
+			<div class="panel-body">
+					
+					@if(flash.contains("erro")) {
+				
+						<div class="alert alert-danger">
+								<strong>Ops!</strong> @flash.get("erro")
+						</div>
+						
+					}
+					
+					@if(flash.contains("success")) {
+						<div class="alert alert-success">
+							<strong>Ok!</strong> @flash.get("success")
+						</div>
+					}
+				
+				<form class="form-horizontal" role="form" method="post" action="@routes.ViagemController.cadastrarNovaViagem(usuario.getEmail())">
+					<div class="form-group">
+						<label for="inputEmail3" class="col-sm-2 control-label">Local</label>
+						<div class="col-sm-5">
+							<input type="text" name="LOCAL_VIAGEM" class="form-control" id="inputEmail3" placeholder="Local">
+						</div>
+
+						<label for="inputEmail4" class="col-sm-1 control-label">Data</label>
+						<div class="col-sm-2">
+							<input type="date" name="DATA_VIAGEM" class="form-control" id="inputEmail3">
+						</div>
+									
+					</div>
+
+					<div class="form-group">
+						<label for="inputEmail3" class="col-sm-2 control-label">Descrição</label>
+						<div class="col-sm-8">
+							<textarea id="inputEmail3" name="DESCRICAO_VIAGEM"
+								placeholder="Descricao da Viagem" class="form-control" rows="6"
+								maxlength="450"></textarea>
+
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inputPassword3" class="col-sm-2 control-label">Tipo de Viagem</label>
+						<div class="col-sm-5">
+								
+								<select name="TIPO_VIAGEM" class="form-control" id="inputPassword3">
+									<option value="ABERTA">ABERTA</option>
+									<option value="LIMITADA">LIMITADA</option>
+								</select>
+						</div>
+
+						<label for="inputEmail4" class="col-sm-1 control-label">Código</label>
+						<div class="col-sm-2">
+							<input type="text" name="CODIGO_VIAGEM" class="form-control" id="inputEmail3" placeholder="codigo">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-8">
+							<hr>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-success">Cadastrar nova Viagem</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+}

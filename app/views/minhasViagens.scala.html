@@ -1,0 +1,209 @@
+@(titulo:String, usuario:models.Usuario) @main(titulo, usuario){
+
+<div class="container">
+	<div class="row">
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4>Minhas Viagens</h4>
+			</div>
+			<div class="panel-body">
+			
+			@if(flash.contains("erro")) {
+				
+						<div class="alert alert-danger">
+								<strong>Ops!</strong> @flash.get("erro")
+						</div>
+						
+					}
+					
+					@if(flash.contains("success")) {
+						<div class="alert alert-success">
+							<strong>Ok!</strong> @flash.get("success")
+						</div>
+					}
+					
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th width="15%">Data</th>
+							<th width="15%" height="10%">Local</th>
+							<th width="47%" height="10%">Descrição</th>
+							<th width="13%">Tipo de Viagem</th>
+							<th>Participantes</th>
+							<th width="1%">Opções</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						@for(viagem <- usuario.getViagens()){
+						<tr>
+							<td>@viagem.getData().format("dd MMMM yyyy")</td>
+							<td>@viagem.getLocal</td>
+							<td align="justify">@viagem.getDescricao</td>
+							<td align="center">
+								@if(viagem.getEstrategia.toString().equals("ABERTA")){
+								<button type="button" class="btn btn-success btn-xs"
+									disabled="disabled">@viagem.getEstrategia</button> }else{
+								<button type="button" class="btn btn-danger btn-xs"
+									disabled="disabled">@viagem.getEstrategia</button> }
+							</td>
+
+							<td align="center">
+								<button name="@viagem.getId" type="button" class="btn btn-warning btn-xs"
+								data-toggle="modal" data-target="#visualizar-viagem-@viagem.getId()">Visualizar</button>
+								
+								<div class="modal fade" id="visualizar-viagem-@viagem.getId()">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">
+													<span aria-hidden="true">&times;</span><span class="sr-only">Fechar</span>
+												</button>
+												<h4 class="modal-title">Participantes da Viagem</h4>
+											</div>
+								
+											<div class="modal-body">
+												<div class="panel-body">
+													<table class="table table-striped">
+														<thead>
+															<tr>
+																<th width="40%">Nome</th>
+																<th width="50%">E-mail</th>
+															</tr>
+														</thead>
+														<tbody>
+															@for(participante <- viagem.getParticipantes()){
+																<tr>
+																	<td>@participante.getNome()</td>
+																	<td>@participante.getEmail()</td>
+																</tr>
+															}
+														</tbody>
+													</table>
+												</div>
+											</div>
+								
+											<div class="modal-footer">
+												<button type="button" class="btn btn-primary" data-dismiss="modal">Sair</button>
+								
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<script>
+									$(function() {
+										$("#visualizar-viagem-@viagem.getId()").dialog({
+											modal : true,
+											buttons : {
+												Ok : function() {
+													$(this).dialog("close");
+												}
+											}
+										});
+									});
+								</script>
+							</td>
+							<td align="center">
+								<button name="@viagem.getId" type="button" class="btn btn-primary btn-xs"
+								data-toggle="modal" data-target="#editar-viagem-@viagem.getId()">Editar</button>
+								
+								<div class="modal fade" id="editar-viagem-@viagem.getId()">
+									<div class="modal-dialog modal-lg">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">
+													<span aria-hidden="true">&times;</span><span class="sr-only">Fechar</span>
+												</button>
+												<h4 class="modal-title">Olá, @usuario.getNome()
+												<br>
+												Você pode Editar ou Excluir Viagem para @viagem.getLocal()</h4>
+											</div>
+								
+											<div class="modal-body">
+												<div class="panel-body">
+													<form class="form-horizontal" role="form" method="post" action="@routes.ViagemController.salvarAlteracao(viagem.getId(), usuario.getEmail())">
+														<div class="form-group">
+															<label for="inputEmail3" class="col-sm-2 control-label">Local</label>
+															<div class="col-sm-5">
+																<input type="text" name="LOCAL_VIAGEM" class="form-control" id="inputEmail3" value="@viagem.getLocal()" readonly>
+															</div>
+									
+															<label for="inputEmail4" class="col-sm-1 control-label">Data</label>
+															<div class="col-sm-3">
+																<input type="date" name="DATA_VIAGEM" class="form-control" id="inputEmail3" value="@viagem.getData()">
+															</div>
+																		
+														</div>
+									
+														<div class="form-group">
+															<label for="inputEmail3" class="col-sm-2 control-label">Descrição</label>
+															<div class="col-sm-9">
+																<textarea id="inputEmail3" name="DESCRICAO_VIAGEM"
+																	placeholder="@viagem.getDescricao()" class="form-control" rows="6"
+																	maxlength="450" readonly ></textarea>
+									
+															</div>
+														</div>
+									
+														<div class="form-group">
+															<label for="inputPassword3" class="col-sm-2 control-label">Tipo de Viagem</label>
+															<div class="col-sm-5">
+																	
+																	<select name="TIPO_VIAGEM" class="form-control" id="inputPassword3">
+																		<option value="ABERTA">ABERTA</option>
+																		<option value="LIMITADA">LIMITADA</option>
+																	</select>
+															</div>
+									
+															<label for="inputEmail4" class="col-sm-1 control-label">Código</label>
+															<div class="col-sm-3">
+																<input type="text" name="CODIGO_VIAGEM" class="form-control" id="inputEmail3" placeholder="codigo">
+															</div>
+														</div>
+									
+														<div class="form-group">
+															<div class="col-sm-offset-2 col-sm-8">
+																<hr>
+															</div>
+														</div>
+									
+														<div class="form-group">
+															<div class="col-sm-offset-2 col-sm-8">
+																
+																<a href="@routes.ViagemController.getMinhasViagens(usuario.getEmail())" class="btn btn-danger">Cancelar</a>
+																<button type="submit" class="btn btn-primary">Salvar Alterações</button>
+															</div>
+														</div>
+													</form>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<script>
+									$(function() {
+										$("#editar-viagem-@viagem.getId()").dialog({
+											modal : true,
+											buttons : {
+												Ok : function() {
+													$(this).dialog("close");
+												}
+											}
+										});
+									});
+								</script>
+							</td>
+								
+
+						</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+}

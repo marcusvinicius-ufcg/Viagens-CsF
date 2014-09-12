@@ -1,0 +1,82 @@
+@(titulo : String, form: Form[controllers.LoginController.Cadastro])
+
+<html>
+
+<head>
+	<title>@titulo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/login.css")">
+	<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/icon.png")">
+	<script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("javascripts/TweenLite.min.js")"></script>
+	<script src="@routes.Assets.at("javascripts/jquery-2.1.1.min.js")" type="text/javascript"></script>
+</head>
+
+<body>
+
+	<div class="container">
+		<br>
+		
+		<div class="row">
+			<div class="col-sm-6 col-md-4 col-md-offset-4">
+				<div class="account-wall">
+					<h1 class="text-center login-title">Insira os dados para se Cadastrar no Viagens CsF</h1>
+					<br>
+					
+					<img class="profile-img" src="@routes.Assets.at("images/user.png")" alt="">
+					@if(form.hasGlobalErrors) {
+					    <center>
+					    	<p class="error">@form.globalError.message</p>
+					    </center>
+					}
+					@if(flash.contains("success")) {
+					    <center>
+					    	<p class="success">@flash.get("success")</p>
+					    </center>
+					}		
+					<form class="form-signin" method="post" action="@routes.LoginController.cadastrar">
+					
+						 <input type="email" 	  name="email" placeholder="E-mail" class="form-control" required autofocus="autofocus">
+					     <input type="text" 	  name="nome"  placeholder="Nome"   class="form-control" required>
+					     <input type="password"   name="senha" placeholder="Senha"  class="form-control" required>
+						
+						<button class="btn btn-lg btn-success btn-block" type="submit">Cadastrar</button>
+						<br>
+						<a href="@routes.LoginController.index" class="pull-left new-account">Voltar Login</a>
+						<br>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(
+				function() {
+					$(document).mousemove(
+							function(e) {
+								TweenLite.to($('body'), .5, {
+									css : {
+										backgroundPosition : ""
+												+ parseInt(event.pageX / 8)
+												+ "px "
+												+ parseInt(event.pageY / '12')
+												+ "px, "
+												+ parseInt(event.pageX / '15')
+												+ "px "
+												+ parseInt(event.pageY / '15')
+												+ "px, "
+												+ parseInt(event.pageX / '30')
+												+ "px "
+												+ parseInt(event.pageY / '30')
+												+ "px"
+									}
+								});
+							});
+				});
+	</script>
+
+</body>
+</html>

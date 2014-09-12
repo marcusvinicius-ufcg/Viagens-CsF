@@ -1,0 +1,32 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.LoginController.index()
+GET     /minhas-viagens             controllers.ViagemController.getMinhasViagens(email: String)
+POST    /minhas-viagens/update		controllers.ViagemController.salvarAlteracao(id:Long, email:String)
+
+
+# Cadastro page
+GET     /cadastro/usuario           controllers.LoginController.paginaDeCadastro()
+POST	/cadastro/usuario           controllers.LoginController.cadastrar()
+
+# Viagem
+GET		/cadastro/viagem		    controllers.ViagemController.cadastrarViagem(email:String)
+POST	/cadastrar/viagem		    controllers.ViagemController.cadastrarNovaViagem(email:String)
+
+# Login page
+POST	/login				        controllers.LoginController.autenticar()
+GET		/logout				        controllers.LoginController.logout()
+
+# Usuarios
+GET		/usuarios				    controllers.ViagemController.usuarios(email:String)
+POST	/participar					controllers.ParticipantesController.participarDeViagemAberta(email:String, id:Long)
+POST	/participar/limitada		controllers.ParticipantesController.participarDeViagemLimitada(email:String, id:Long)
+
+#Agenda
+GET		/agenda					    controllers.ViagemController.agenda(email:String)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

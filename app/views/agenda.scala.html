@@ -1,0 +1,109 @@
+@(titulo:String, usuario:models.Usuario) @main(titulo, usuario){
+
+<div class="container">
+	<div class="row">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4>Viagens em que você esta participando</h4>
+			</div>
+			<div class="panel-body">
+				@if(controllers.ViagemController.getAgenda(usuario.getEmail()).size == 0){
+				<h3>Ops! Você não esta participando de nenhuma Viagem.</h3>
+				}else{
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th width="15%">Data</th>
+							<th width="15%" height="10%">Local</th>
+							<th width="47%" height="10%">Descrição</th>
+							<th width="13%">Tipo de Viagem</th>
+							<th>Partcipantes</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for(viagem <-controllers.ViagemController.getAgenda(usuario.getEmail())){
+						<tr>
+							<td>@viagem.getData().format("dd MMMM yyyy")</td>
+							<td>@viagem.getLocal</td>
+							<td align="justify">@viagem.getDescricao</td>
+							<td align="center">
+								@if(viagem.getEstrategia.toString().equals("ABERTA")){
+								<button type="button" class="btn btn-success btn-xs"
+									disabled="disabled">@viagem.getEstrategia</button> }else{
+								<button type="button" class="btn btn-danger btn-xs"
+									disabled="disabled">@viagem.getEstrategia</button> }
+							</td>
+
+							<td align="center">
+								<button name="@viagem.getId" type="button"
+									class="btn btn-warning btn-xs" data-toggle="modal"
+									data-target="#visualizar-viagem-@viagem.getId()">Visualizar</button>
+
+								<div class="modal fade" id="visualizar-viagem-@viagem.getId()">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">
+													<span aria-hidden="true">&times;</span><span
+														class="sr-only">Fechar</span>
+												</button>
+												<h4 class="modal-title">Participantes da Viagem</h4>
+											</div>
+
+											<div class="modal-body">
+												<div class="panel-body">
+													<table class="table table-striped">
+														<thead>
+															<tr>
+																<th width="40%">Nome</th>
+																<th width="50%">E-mail</th>
+															</tr>
+														</thead>
+														<tbody>
+															@for(participante <- viagem.getParticipantes()){
+															<tr>
+																<td>@participante.getNome()</td>
+																<td>@participante.getEmail()</td>
+															</tr>
+															}
+														</tbody>
+													</table>
+												</div>
+											</div>
+
+											<div class="modal-footer">
+												<button type="button" class="btn btn-primary"
+													data-dismiss="modal">Sair</button>
+
+											</div>
+										</div>
+									</div>
+								</div> <script>
+									$(function() {
+										$("#visualizar-viagem-@viagem.getId()")
+												.dialog(
+														{
+															modal : true,
+															buttons : {
+																Ok : function() {
+																	$(this)
+																			.dialog(
+																					"close");
+																}
+															}
+														});
+									});
+								</script>
+							</td>
+
+
+						</tr>
+						} }
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+}

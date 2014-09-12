@@ -1,0 +1,194 @@
+@(titulo:String, usuario:models.Usuario)
+
+
+@main(titulo, usuario){
+
+<div class="container">
+	<div class="row">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4>Viagens</h4>
+			</div>
+			<div class="panel-body">
+			
+				@if(flash.contains("erro")) {
+				
+					<div class="alert alert-danger">
+							<strong>Ops!</strong> @flash.get("erro")
+					</div>
+					
+				}
+				
+				@if(flash.contains("success")) {
+					<div class="alert alert-success">
+						<strong>Ok!</strong> @flash.get("success")
+					</div>
+				}
+					
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th width="15%">Data</th>
+							<th width="15%" height="10%">Local</th>
+							<th width="47%" height="10%">Descrição</th>
+							<th width="13%">Tipo de Viagem</th>
+							<th>Partcipantes</th>
+							<th>Opções</th>
+						</tr>
+					</thead>
+					<tbody>
+					@for(viagem <- controllers.ViagemController.getViagens()){
+						<tr>
+							<td>@viagem.getData().format("dd MMMM yyyy")</td>
+							<td>@viagem.getLocal</td>
+							<td align="justify">@viagem.getDescricao</td>
+							<td align="center">
+								@if(viagem.getEstrategia.toString().equals("ABERTA")){
+									<button type="button" class="btn btn-success btn-xs" disabled="disabled">@viagem.getEstrategia</button>
+								}else{
+									<button type="button" class="btn btn-danger btn-xs" disabled="disabled">@viagem.getEstrategia</button>
+								}
+							</td>
+							
+							<td align="center">
+								<button name="@viagem.getId" type="button" class="btn btn-warning btn-xs"
+								data-toggle="modal" data-target="#visualizar-viagem-@viagem.getId()">Visualizar</button>
+								
+								<div class="modal fade" id="visualizar-viagem-@viagem.getId()">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">
+													<span aria-hidden="true">&times;</span><span class="sr-only">Fechar</span>
+												</button>
+												<h4 class="modal-title">Participantes da Viagem</h4>
+											</div>
+								
+											<div class="modal-body">
+												<div class="panel-body">
+													<table class="table table-striped">
+														<thead>
+															<tr>
+																<th width="40%">Nome</th>
+																<th width="50%">E-mail</th>
+															</tr>
+														</thead>
+														<tbody>
+															@for(participante <- viagem.getParticipantes()){
+																<tr>
+																	<td>@participante.getNome()</td>
+																	<td>@participante.getEmail()</td>
+																</tr>
+															}
+														</tbody>
+													</table>
+												</div>
+											</div>
+								
+											<div class="modal-footer">
+												<button type="button" class="btn btn-primary" data-dismiss="modal">Sair</button>
+								
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<script>
+									$(function() {
+										$("#visualizar-viagem-@viagem.getId()").dialog({
+											modal : true,
+											buttons : {
+												Ok : function() {
+													$(this).dialog("close");
+												}
+											}
+										});
+									});
+								</script>
+								
+							</td>
+							
+							<td align="center">
+								<button name="@viagem.getId" type="button" class="btn btn-info btn-xs"
+									data-toggle="modal" data-target="#participar-viagem-@viagem.getId()">Participar</button>
+								
+								<div class="modal fade" id="participar-viagem-@viagem.getId()">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">
+													<span aria-hidden="true">&times;</span><span class="sr-only">Fechar</span>
+												</button>
+												<h4 class="modal-title">
+													Olá, @usuario.getNome() <br> Gostaria de viajar para
+													@viagem.getLocal()?
+												</h4>
+											</div>
+								
+											<div class="modal-body">
+												<div class="panel-body">
+													<form class="form-horizontal" role="form" method="post"
+														action="@routes.ParticipantesController.participarDeViagemLimitada(usuario.getEmail(), viagem.getId())">
+														<div class="form-group">
+															<label for="inputEmail3" class="col-sm-2 control-label">Nome</label>
+															<div class="col-sm-9">
+																<input type="text" name="nome" class="form-control"
+																	id="inputEmail3" value="@usuario.getNome()" readonly="readonly">
+															</div>
+														</div>
+								
+														<div class="form-group">
+															<label for="inputEmail3" class="col-sm-2 control-label">E-mail</label>
+															<div class="col-sm-9">
+																<input type="text" name="email" class="form-control"
+																	id="inputEmail3" value="@usuario.getEmail()" readonly="readonly">
+															</div>
+														</div>
+														@if(viagem.getEstrategia.toString().equals("LIMITADA")){
+															<div class="form-group">
+																<label for="inputEmail3" class="col-sm-2 control-label">Código</label>
+																<div class="col-sm-9">
+																	<input type="text" name="codigo" class="form-control"
+																		id="inputEmail3"
+																		placeholder="Essa viagem é limitada, para participar insira o código" autofocus>
+																</div>
+															</div>
+														}
+														<div class="modal-footer">
+															<button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+															<button type="submit" class="btn btn-success">Confirmar</button>
+											
+														</div>
+													</form>
+												</div>
+											</div>
+								
+											
+										</div>
+									</div>
+								</div>
+			
+								<script>
+									$(function() {
+										$("#participar-viagem-@viagem.getId()").dialog({
+											modal : true,
+											buttons : {
+												Ok : function() {
+													$(this).dialog("close");
+												}
+											}
+										});
+									});
+								</script>
+							</td>
+							
+						</tr>
+					}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+}

@@ -1,0 +1,80 @@
+@(titulo:String, usuario:models.Usuario)
+
+
+@main(titulo, usuario){
+
+<div class="container">
+	<div class="row">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4>Usuarios</h4>
+			</div>
+			<div class="panel-body">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th width="45%">Nome</th>
+							<th width="49%" height="10%">E-mail</th>
+							<th width="1%" height="10%">Status </th>
+							<th width="1%" height="10%">Seguindo </th>
+							<th width="1%" height="10%">Seguidores</th>
+							<th width="1%" height="10%">Abertas</th>
+							<th width="1%" height="10%">Limitadas</th>
+							<th width="1%" height="10%">Total</th>
+						</tr>
+					</thead>
+					<tbody>
+					@for(usuario <- controllers.ViagemController.getUsuarios()){
+						<tr>
+							<td>@usuario.getNome</td>
+							<td>@usuario.getEmail</td>
+							
+							<td align="center">
+								@if(controllers.ParticipantesController.usuarioOnline(usuario)){
+								
+									<span class="label label-success">
+										on-line
+									</span>
+								
+								}else{
+								
+									<span class="label label-default">
+										off-line
+									</span>
+								}
+							</td>
+							<td align="center">
+								<span class="label label-info">
+									@controllers.ViagemController.viagensQueParticipa(usuario.getEmail()).size
+								</span>
+							</td>
+							<td align="center">
+								<span class="label label-warning">
+									@usuario.participantesEmMinhasViagens()
+								</span>
+							</td>
+							<td align="center">
+								<span class="label label-success">
+									@usuario.getNumeroDeViagensAberta()
+								</span>
+							</td>
+							<td align="center">
+								<span class="label label-danger">
+									@usuario.getNumeroDeViagensLimitada()
+								</span>
+							</td>
+							<td align="center">
+								<span class="label label-primary">
+									@usuario.getNumeroDeViagens()
+								</span>
+							</td>
+						</tr>
+					}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+}
