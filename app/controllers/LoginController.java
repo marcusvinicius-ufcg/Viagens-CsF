@@ -1,7 +1,6 @@
 package controllers;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.google.common.base.Objects;
 
@@ -106,8 +105,7 @@ public class LoginController extends Controller {
 
 	@Transactional
 	private static Usuario getUser(String email) {
-		List<Usuario> result = dao.findByAttributeName("Usuario", "email", email);
-		return result.size() == 0 ? null : result.get(0);
+		return dao.findByEntityId(Usuario.class, email);
 	}
 
 	@Transactional
