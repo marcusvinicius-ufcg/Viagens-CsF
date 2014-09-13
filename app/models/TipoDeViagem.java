@@ -11,7 +11,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 /**
- * Classe abstrata representa a estrategia de adicionar participantes a viagem.
+ * Classe abstrata representa a estrategia para
+ * adicionar participantes a uma viagem.
  * 
  * @author Marcus Vinicius, Gleyser Guimaraes e Silvano Albuquerque
  * @since 2014.2
@@ -51,7 +52,7 @@ public abstract class TipoDeViagem {
 	 */
 	public abstract boolean adicionarParticipante(Collection<Usuario> participantes, Solicitacao solicitacao);
 	
-	public abstract String getCodigo();
+	abstract String getCodigo();
 	
 	@Override
 	public abstract String toString();

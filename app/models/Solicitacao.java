@@ -1,7 +1,7 @@
 package models;
 
 /**
- * Classe Solicitacao
+ * Classe abstrata Solicitacao. Funciona como uma mascara de dados.
  * 
  * @author Marcus Vinicius, Gleyser Guimaraes e Silvano Albuquerque
  * @since 2014.2
@@ -10,16 +10,17 @@ package models;
 public abstract class Solicitacao {
 	
 	protected Usuario usuario;
-	protected String codigo;
 	
 	/**
-	 * Metodo retorna o Usuario da Solicitacao
+	 * Metodo retorna o Usuario da Solicitacao.
 	 * @return
 	 */
 	public abstract Usuario getUsuario();
 	
 	/**
-	 * Metodo retorna o Codigo da Solicitacao
+	 * Metodo retorna o Codigo da Solicitacao.
+	 * Cada subclasse definira a visibilidade do metodo.
+	 * 
 	 * @return
 	 */
 	public abstract String  getCodigo();
