@@ -60,7 +60,7 @@ public class Viagem implements Comparable<Viagem>{
 		super();
 		participantes = new ArrayList<Usuario>();
 	}
-
+	
 	/**
 	 * @param local - local da viagem.
 	 * @param descricao - breve descricao da viagem.
