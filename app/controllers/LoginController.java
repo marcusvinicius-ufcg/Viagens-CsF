@@ -24,6 +24,9 @@ public class LoginController extends Controller {
 	private static final Form<Login> FORM_LOGIN = Form.form(Login.class);
 	//FIM DA DECLARACAO DE VARIAVIS
 	
+	static{
+		session().clear();
+	}
 	/**
 	 * Metodo retorna o index
 	 * @return pagina web
