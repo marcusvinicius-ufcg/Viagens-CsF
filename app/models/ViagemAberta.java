@@ -27,13 +27,13 @@ public class ViagemAberta extends TipoDeViagem{
 	}
 	
 	@Override
-	public boolean adicionarParticipante(Collection<Usuario> participantes, String codigo, Usuario usuario){
+	public boolean adicionarParticipante(Collection<Usuario> participantes, Solicitacao solicitacao){
 		//verificando se usuario ja esta na colecao de participantes
-		if(participantes.contains(usuario)){
+		if(participantes.contains(solicitacao.getUsuario())){
 			return false;
 		//caso nao esteja adiciona a colecao
 		}else{
-			return participantes.add(usuario);
+			return participantes.add(solicitacao.getUsuario());
 		}
 	}
 	
@@ -59,5 +59,10 @@ public class ViagemAberta extends TipoDeViagem{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String getCodigo() {
+		throw new UnsupportedOperationException("Viagem Aberta Não Possui Código.");
 	}
 }

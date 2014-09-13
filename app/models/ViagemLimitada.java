@@ -9,8 +9,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
- * Subclasse representa a estrategia limitada, ao adicionar participante
- * o mesmo devera informar um codigo para se autenticado com o codigo da estrategia.
+ * Subclasse representa a estrategia limitada, ao adicionar participante o mesmo
+ * devera informar um codigo para se autenticado com o codigo da estrategia.
  * 
  * @author Marcus Vinicius, Gleyser Guimaraes e Silvano Albuquerque
  * @since 2014.2
@@ -18,59 +18,71 @@ import javax.persistence.Transient;
  */
 @Entity
 @DiscriminatorValue("VL")
-@Table(name="VIAGEM_STRATEGY_LIMITADA")
-public class ViagemLimitada extends TipoDeViagem{
+@Table(name = "VIAGEM_STRATEGY_LIMITADA")
+public class ViagemLimitada extends TipoDeViagem {
 
-	@Column(name="COD_VIAGEM_LIMITADA")
+	@Column(name = "COD_VIAGEM_LIMITADA")
 	private String codigo;
-	
+
 	@Transient
 	private static final Integer LENGTH_MINIMO = 3;
 
 	public ViagemLimitada() {
 		// TODO Auto-generated constructor stub
 	}
+
 	/**
-	 * Construtor da Subclasse, o mesmo recebe o codigo da estrategia.
-	 * Onde cada participante antes de se participar do evento tera que informar.
-	 * @param codigo - codigo da estrategia.
-	 * @throws Exception - caso o codigo seja null ou menor que 3 caracteres.
+	 * Construtor da Subclasse, o mesmo recebe o codigo da estrategia. Onde cada
+	 * participante antes de se participar do evento tera que informar.
+	 * 
+	 * @param codigo
+	 *            - codigo da estrategia.
+	 * @throws Exception
+	 *             - caso o codigo seja null ou menor que 3 caracteres.
 	 */
 	public ViagemLimitada(String codigo) throws Exception {
 		isCodigoValido(codigo);
 	}
-	
+
 	@Override
-	public boolean adicionarParticipante(Collection<Usuario> participantes, String codigo, Usuario usuario) {
-		//verificando se codigo sao iguais e se participantes nao esta na lista
-		if(this.codigo.equals(codigo) && !participantes.contains(usuario)){
-			return participantes.add(usuario);
-		}else{
-			return false;	
+	public boolean adicionarParticipante(Collection<Usuario> participantes, Solicitacao solicitacao) {
+		// verificando se codigo sao iguais e se participantes nao esta na lista
+		if (this.codigo.equals(solicitacao.getCodigo()) 
+				&& !participantes.contains(solicitacao.getUsuario())) {
+			return participantes.add(solicitacao.getUsuario());
+		} else {
+			return false;
 		}
 	}
-	
+
 	/**
 	 * Metodo retorna o codigo da estrategia
+	 * 
 	 * @return String representando o codigo
 	 */
+	@Override
 	public String getCodigo() {
 		return codigo;
 	}
 
 	/**
 	 * Metodo define o codigo para estrategia
+	 * 
 	 * @param codigo
- 	 * @throws Exception - caso o parametro se null ou menor que 3 caracteres
+	 * @throws Exception
+	 *             - caso o parametro se null ou menor que 3 caracteres
 	 */
 	public void setCodigo(String codigo) throws Exception {
 		isCodigoValido(codigo);
 	}
-	
+
 	/**
-	 * Metodo verifica se o paramentro e valido para ser um codigo dessa estrategia.
+	 * Metodo verifica se o paramentro e valido para ser um codigo dessa
+	 * estrategia.
+	 * 
 	 * @param codigo
-	 * @throws Exception - caso o parametro se null ou menor que 3 caracteres
+	 * @throws Exception
+	 *             - caso o parametro se null ou menor que 3 caracteres
 	 */
 	private void isCodigoValido(String codigo) throws Exception {
 		if (codigo == null || codigo.trim().isEmpty()) {

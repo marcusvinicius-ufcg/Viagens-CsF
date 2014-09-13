@@ -6,6 +6,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import models.Solicitacao;
+import models.SolicitacaoAberta;
+import models.SolicitacaoLimitada;
 import models.Usuario;
 import models.ViagemAberta;
 import models.ViagemLimitada;
@@ -14,10 +17,16 @@ import models.ViagemLimitada;
 public class TipoDeViagemTest {
 
 	private Usuario usuario;
+	private Solicitacao solicitacaoAberta;
+	private Solicitacao solicitacaoLimitada;
+	private Solicitacao outraSolicitacaoLimitada;
 	
 	@Before
 	public void setUp() throws Exception {
 		usuario = new Usuario("Teste", "teste@teste.com", "123456");
+		solicitacaoAberta = new SolicitacaoAberta(usuario);
+		solicitacaoLimitada = new SolicitacaoLimitada(usuario, "123");
+		outraSolicitacaoLimitada = new SolicitacaoLimitada(usuario, "ASDASD");
 	}
 
 	@Test
@@ -29,15 +38,14 @@ public class TipoDeViagemTest {
 		
 		assertTrue(lista.size() == 0);
 		
-		assertTrue(aberta.adicionarParticipante(lista, null, usuario));
+		assertTrue(aberta.adicionarParticipante(lista, solicitacaoAberta));
 		
 		//NAO DEVE ADICIONAR USUARIOS JA ADICIONADOS
-		assertFalse(aberta.adicionarParticipante(lista, null, usuario));
+		assertFalse(aberta.adicionarParticipante(lista, solicitacaoAberta));
 		
 		assertTrue(lista.contains(usuario));
 		
 		assertTrue(lista.size() == 1);
-		
 	}
 	
 	@Test
@@ -47,6 +55,7 @@ public class TipoDeViagemTest {
 		
 		ViagemLimitada limitada = new ViagemLimitada();
 		
+		//DEVE SER NULA QUANDO INSTANCIADA COM CONTRUTOR VAZIO
 		assertNull(limitada.getCodigo());
 		
 		try {
@@ -81,30 +90,24 @@ public class TipoDeViagemTest {
 			fail();
 		}
 		
-		assertTrue(lista.size() == 0);
-		
-		//CODIGO INVALIDO
-		assertFalse(limitada.adicionarParticipante(lista, "ASD", usuario));
+		//NAO DEVE SER NULA QUANDO INSTANCIADA POR CONTRUTOR DEFAULT
+		assertNotNull(limitada.getCodigo());
 		
 		assertTrue(lista.size() == 0);
 		
-		assertFalse(limitada.adicionarParticipante(lista, "ASDAD", usuario));
-		
-		assertTrue(lista.size() == 0);
-		
-		assertFalse(limitada.adicionarParticipante(lista, "", usuario));
+		//CODIGO DA SOLICITACAO DIFERENTE DA ESTRATEGIA
+		assertFalse(limitada.adicionarParticipante(lista, outraSolicitacaoLimitada));
 		
 		assertTrue(lista.size() == 0);
 		
 		//DEVE ADICIONAR
-		assertTrue(limitada.adicionarParticipante(lista, "123", usuario));
+		assertTrue(limitada.adicionarParticipante(lista, solicitacaoLimitada));
 		
 		//NAO DEVE ADICIONAR USUARIOS JA ADICIONADOS
-		assertFalse(limitada.adicionarParticipante(lista, "123", usuario));
+		assertFalse(limitada.adicionarParticipante(lista, solicitacaoLimitada));
 		
 		assertTrue(lista.contains(usuario));
 		
 		assertTrue(lista.size() == 1);
-		
 	}
 }

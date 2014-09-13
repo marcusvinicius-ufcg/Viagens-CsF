@@ -49,7 +49,9 @@ public abstract class TipoDeViagem {
 	 * @param usuario - usuario a ser adicionado na colecao de participante.
 	 * @return true - caso usuario seja adicionado na colecao, false caso contrario.
 	 */
-	public abstract boolean adicionarParticipante(Collection<Usuario> participantes, String codigo, Usuario usuario);
+	public abstract boolean adicionarParticipante(Collection<Usuario> participantes, Solicitacao solicitacao);
+	
+	public abstract String getCodigo();
 	
 	@Override
 	public abstract String toString();

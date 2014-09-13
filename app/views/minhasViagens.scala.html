@@ -118,7 +118,7 @@
 												</button>
 												<h4 class="modal-title">Olá, @usuario.getNome()
 												<br>
-												Você pode Editar ou Excluir Viagem para @viagem.getLocal()</h4>
+												Você pode Editar Viagem para @viagem.getLocal()</h4>
 											</div>
 								
 											<div class="modal-body">
@@ -151,15 +151,24 @@
 															<label for="inputPassword3" class="col-sm-2 control-label">Tipo de Viagem</label>
 															<div class="col-sm-5">
 																	
-																	<select name="TIPO_VIAGEM" class="form-control" id="inputPassword3">
-																		<option value="ABERTA">ABERTA</option>
-																		<option value="LIMITADA">LIMITADA</option>
+																	<select name="TIPO_VIAGEM" class="form-control" id="inputPassword3" >
+																		@if(viagem.getEstrategia.toString().equals("ABERTA")){
+																			<option value="ABERTA" selected>ABERTA</option>
+																			<option value="LIMITADA" >LIMITADA</option>
+																		}else{
+																			<option value="ABERTA" >ABERTA</option>
+																			<option value="LIMITADA" selected>LIMITADA</option>
+																		}
 																	</select>
 															</div>
 									
 															<label for="inputEmail4" class="col-sm-1 control-label">Código</label>
 															<div class="col-sm-3">
-																<input type="text" name="CODIGO_VIAGEM" class="form-control" id="inputEmail3" placeholder="codigo">
+																@if(viagem.getEstrategia.toString().equals("ABERTA")){
+																	<input type="text" name="CODIGO_VIAGEM" class="form-control" id="inputEmail3" placeholder="codigo">
+																}else{
+																	<input type="text" name="CODIGO_VIAGEM" class="form-control" id="inputEmail3" placeholder="codigo" value="@viagem.getEstrategia.getCodigo()">
+																}
 															</div>
 														</div>
 									

@@ -19,8 +19,7 @@
 				
 						<div class="alert alert-danger">
 								<strong>Ops!</strong> @flash.get("erro")
-						</div>
-						
+						</div>	
 					}
 					
 					@if(flash.contains("success")) {
@@ -54,19 +53,19 @@
 					</div>
 
 					<div class="form-group">
-						<label for="inputPassword3" class="col-sm-2 control-label">Tipo de Viagem</label>
+						<label for="select" class="col-sm-2 control-label">Tipo de Viagem</label>
 						<div class="col-sm-5">
 								
-								<select name="TIPO_VIAGEM" class="form-control" id="inputPassword3">
+								<select name="TIPO_VIAGEM" class="form-control" id="select">
 									<option value="ABERTA">ABERTA</option>
 									<option value="LIMITADA">LIMITADA</option>
 								</select>
 						</div>
-
-						<label for="inputEmail4" class="col-sm-1 control-label">Código</label>
-						<div class="col-sm-2">
-							<input type="text" name="CODIGO_VIAGEM" class="form-control" id="inputEmail3" placeholder="codigo">
+						
+						<div id="CODIGO">
+						
 						</div>
+						
 					</div>
 
 					<div class="form-group">
@@ -86,3 +85,27 @@
 	</div>
 </div>
 }
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('select').change(function() {
+			var tipo = $("option:selected", this).val();
+				if (tipo == "LIMITADA") {
+					
+					var input = '<label id="LABEL" for="inputEmail4" class="col-sm-1 control-label">Código</label>';
+						input += '<div id="CODIGO_VIAGEM" class="col-sm-2">';
+					
+					input += '<input type="text" name="CODIGO_VIAGEM" class="form-control" id="inputEmail3" placeholder="Código">';
+					input += '</div>';
+					var div = document.getElementById("CODIGO");
+					$('#CODIGO_VIAGEM').remove();
+					$('#LABEL').remove();
+					$('#CODIGO').append(input);
+				}
+				if (tipo == "ABERTA") {
+					$('#CODIGO_VIAGEM').remove();
+					$('#LABEL').remove();
+				}
+		});
+	});
+</script>

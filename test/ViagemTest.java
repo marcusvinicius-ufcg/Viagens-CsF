@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import models.SolicitacaoAberta;
+import models.SolicitacaoLimitada;
 import models.TipoDeViagem;
 import models.Usuario;
 import models.Viagem;
@@ -267,14 +269,15 @@ public class ViagemTest {
 			fail();
 		}
 		
+		SolicitacaoAberta solicitacaoAberta = new SolicitacaoAberta(usuario);
 		
-		viagem.adicionarParticipante("", usuario);
+		viagem.adicionarParticipante(solicitacaoAberta);
 		assertEquals(1, viagem.countParticipantes());
 		
 		// Um usuario não deve ser inserido mais de uma vez.
-		viagem.adicionarParticipante("", usuario);
-		viagem.adicionarParticipante("", usuario);
-		viagem.adicionarParticipante("", usuario);
+		viagem.adicionarParticipante(solicitacaoAberta);
+		viagem.adicionarParticipante(solicitacaoAberta);
+		viagem.adicionarParticipante(solicitacaoAberta);
 		assertEquals(1, viagem.countParticipantes());
 	}
 	
@@ -295,20 +298,25 @@ public class ViagemTest {
 		} catch (Exception e) {
 			fail();
 		}
+		SolicitacaoLimitada solicitacaoLimitada = new SolicitacaoLimitada(u, "098765");
 		
-		viagem.adicionarParticipante("098765", u);
+		viagem.adicionarParticipante(solicitacaoLimitada);
 		assertEquals(1, viagem.countParticipantes());
 		
 		// Um usuario não deve ser inserido mais de uma vez.
-		viagem.adicionarParticipante("098765", u);
-		viagem.adicionarParticipante("098765", u);
+		viagem.adicionarParticipante(solicitacaoLimitada);
+		viagem.adicionarParticipante(solicitacaoLimitada);
 		assertEquals(1, viagem.countParticipantes());
 		
+		SolicitacaoLimitada outraSolicitacaoLimitada = new SolicitacaoLimitada(u1, "123");
+		
 		// O código informado deve ser o mesmo da viagem
-		assertFalse(viagem.adicionarParticipante("123", u1));
+		assertFalse(viagem.adicionarParticipante(outraSolicitacaoLimitada));
+		
+		SolicitacaoLimitada solicitacaoLimitadaNull = new SolicitacaoLimitada(u1, null);
 		
 		// O código não pode ser nulo ou inválido.
-		assertFalse(viagem.adicionarParticipante(null, u));
+		assertFalse(viagem.adicionarParticipante(solicitacaoLimitadaNull));
 	}
 	
 	public void deveFuncionarNoBD(){
@@ -423,10 +431,20 @@ public class ViagemTest {
 			dao.persist(u1);	dao.persist(u2);	dao.persist(u3);	
 			dao.persist(u4);	dao.persist(u5);
 			
-			v1.adicionarParticipante("", u1);	v1.adicionarParticipante("", u2);
-			v1.adicionarParticipante("", u3);
+			SolicitacaoAberta solicitAberta1 = new SolicitacaoAberta(u1);
+			v1.adicionarParticipante(solicitAberta1);
 			
-			v2.adicionarParticipante("123456", u5);	  v2.adicionarParticipante("123456", u4);
+			SolicitacaoAberta solicitAberta2 = new SolicitacaoAberta(u2);
+			v1.adicionarParticipante(solicitAberta2);
+			
+			SolicitacaoAberta solicitAberta3 = new SolicitacaoAberta(u3);
+			v1.adicionarParticipante(solicitAberta3);
+			
+			SolicitacaoLimitada solicitLimitada1 = new SolicitacaoLimitada(u4, "123456");
+			v2.adicionarParticipante(solicitLimitada1);
+			
+			SolicitacaoLimitada solicitLimitada2 = new SolicitacaoLimitada(u5, "123456");
+			v2.adicionarParticipante(solicitLimitada2);	  
 			
 			dao.merge(v1);		dao.merge(v2);
 			

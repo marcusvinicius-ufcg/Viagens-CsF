@@ -22,8 +22,7 @@ GET		/logout				        controllers.LoginController.logout()
 
 # Usuarios
 GET		/usuarios				    controllers.ViagemController.usuarios(email:String)
-POST	/participar					controllers.ParticipantesController.participarDeViagemAberta(email:String, id:Long)
-POST	/participar/limitada		controllers.ParticipantesController.participarDeViagemLimitada(email:String, id:Long)
+POST	/participar					controllers.ParticipantesController.participarDeViagem(email:String, id:Long)
 
 #Agenda
 GET		/agenda					    controllers.ViagemController.agenda(email:String)

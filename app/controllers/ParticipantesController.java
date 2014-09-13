@@ -1,17 +1,19 @@
 package controllers;
-
-
-
 import static play.data.Form.form;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import models.SolicitacaoAberta;
+import models.SolicitacaoLimitada;
 import models.Usuario;
 import models.Viagem;
+import models.ViagemAberta;
+import models.ViagemLimitada;
 import models.dao.GenericDAO;
 import models.dao.GenericDAOImpl;
+
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -24,31 +26,7 @@ public class ParticipantesController extends Controller {
 	// FIM DA DECLARACAO DE VARIAVEIS
 	
 	@Transactional
-	public static Result participarDeViagemAberta(String email, Long idViagem){
-		
-		Usuario usuario = getUser(email);
-		
-		if (usuario == null) {
-			return redirect(controllers.routes.LoginController.index());
-		}
-		
-		Viagem viagem = getViagem(idViagem);
-		if(viagem.adicionarParticipante(null, usuario)){
-			flash("success", "Você agora esta na lista de participantes da Viagem para " + viagem.getLocal() + ".");
-		}else{
-			flash("erro", "Não foi possivel adicionar você a lista de participantes da Viagem.\n"
-					+ "Vefique se ja esta participando.");
-		}
-		
-		dao.merge(viagem);
-		dao.flush();
-		
-		
-		return redirect(controllers.routes.LoginController.index());
-	}
-	
-	@Transactional
-	public static Result participarDeViagemLimitada(String email, Long idViagem){
+	public static Result participarDeViagem(String email, Long idViagem){
 		
 		Usuario usuario = getUser(email);
 		
@@ -58,19 +36,40 @@ public class ParticipantesController extends Controller {
 		
 		Viagem viagem = getViagem(idViagem);
 		
-		String codigo = form().bindFromRequest().get("codigo");
-		
-		if(viagem.adicionarParticipante(codigo, usuario)){
+		if(viagem.getEstrategia() instanceof ViagemAberta){
 			
-			dao.merge(viagem);
-			dao.flush();
+			SolicitacaoAberta solicitacao = new SolicitacaoAberta(usuario);
 			
-			flash("success", "Você agora esta na lista de participantes da Viagem para " + viagem.getLocal() + ".");
-		}else{
-			flash("erro", "Não foi possivel se Increver na Viagem.\n"
-					+ "Vefique se ja esta participando ou se código da viagem é valido.");
+			if(viagem.adicionarParticipante(solicitacao)){
+				dao.merge(viagem);
+				dao.flush();
+				
+				flash("success", "Você agora esta na lista de participantes da Viagem para " + viagem.getLocal() + ".");
+			}else{
+				flash("erro", "Não foi possivel se Increver na Viagem.\n"
+						+ "Vefique se ja esta participando da viagem.");
+			}
+			return redirect(controllers.routes.LoginController.index());
+			
+		}else if(viagem.getEstrategia() instanceof ViagemLimitada){
+			String codigo = form().bindFromRequest().get("codigo");
+			
+			SolicitacaoLimitada solicitacao = new SolicitacaoLimitada(usuario, codigo);
+			
+			if(viagem.adicionarParticipante(solicitacao)){
+				
+				dao.merge(viagem);
+				dao.flush();
+				
+				flash("success", "Você agora esta na lista de participantes da Viagem para " + viagem.getLocal() + ".");
+			}else{
+				flash("erro", "Não foi possivel se Increver na Viagem.\n"
+						+ "Vefique se ja esta participando ou se código da viagem é valido.");
+			}
+			return redirect(controllers.routes.LoginController.index());
 		}
-		return redirect(controllers.routes.LoginController.index());
+		
+		return redirect(controllers.routes.LoginController.index());		
 	}
 	
 	@Transactional

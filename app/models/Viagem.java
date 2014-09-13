@@ -195,12 +195,11 @@ public class Viagem implements Comparable<Viagem>{
 
 	/**
 	 * Metodo adiciona participante a viagem
-	 * @param codigo - caso a viagem seja limitada
-	 * @param usuario - usuario canditado a viagem
+	 * @param solicitacao - solicitacao do usuario.
 	 * @return true - caso usuario seja adicionado e false caso contrario.
 	 */
-	public boolean adicionarParticipante(String codigo, Usuario usuario){
-		return estrategia.adicionarParticipante(participantes, codigo, usuario);
+	public boolean adicionarParticipante(Solicitacao solicitacao){		
+		return estrategia.adicionarParticipante(participantes, solicitacao);
 	}
 
 	@Override
