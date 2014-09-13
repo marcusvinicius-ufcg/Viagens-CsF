@@ -30,7 +30,6 @@ public class ViagemController extends Controller {
 	private static final String CADASTRO_VIAGEM = new String("Cadastro de Viagem - Viagens CsF");
 	private static final String AGENDA_VIAGEM = new String("Agenda de Viagens - Viagens CsF");
 	private final static Form<Viagem> VIAGEM_FORM = form(Viagem.class);
-
 	// FIM DA DECLARACAO DE VARIAVEIS
 
 	@Transactional

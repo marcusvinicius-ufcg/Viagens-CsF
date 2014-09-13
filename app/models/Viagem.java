@@ -62,52 +62,13 @@ public class Viagem implements Comparable<Viagem>{
 	}
 
 	/**
-	 * Contrutor para viagem do tipo ABERTA.
-	 * @param local - local da viagem
-	 * @param descricao - breve descricao da viagem
-	 * @param data - data da viagem
-	 * @param participantes - colecao de participantes inscritos na viagem.
-	 * @throws Exception - 	cada parametro sao verificados independentemente,
-	 * 						contrutor apenas relanca as exception
-	 */
-	public Viagem(String local, String descricao, Date data, List<Usuario> participantes) throws Exception {
-		super();
-		isLocalValido(local);
-		isDataValida(data);
-		isDescricaoValida(descricao);
-		this.estrategia = new ViagemAberta();
-		isParticipantesValido(participantes);
-	}
-
-	/**
-	 * Contrutor para viagem do tipo LIMITADA
 	 * @param local - local da viagem.
-	 * @param codigo - codigo que que torna a viagem limitada aos portadores do codigo.
 	 * @param descricao - breve descricao da viagem.
 	 * @param data - data da viagem
+	 * @param tipo - tipo da viagem
 	 * @param participantes - colecao de participantes inscritos na viagem.
-	 * @throws Exception - 	cada parametro sao verificados independentemente,
-	 * 						contrutor apenas relanca as exception
-	 */
-	public Viagem(String local, String descricao, String codigo, Date data,
-			List<Usuario> participantes) throws Exception {
-		super();
-		isLocalValido(local);
-		isDataValida(data);
-		isDescricaoValida(descricao);
-		this.estrategia = new ViagemLimitada(codigo);
-		isParticipantesValido(participantes);
-	}
-
-	/**
-	 * Contrutor para viagem do tipo LIMITADA
-	 * @param local - local da viagem.
-	 * @param codigo - codigo que que torna a viagem limitada aos portadores do codigo.
-	 * @param descricao - breve descricao da viagem.
-	 * @param data - data da viagem
-	 * @param participantes - colecao de participantes inscritos na viagem.
-	 * @throws Exception - 	cada parametro sao verificados independentemente,
-	 * 						contrutor apenas relanca as exception
+	 * @throws Exception - ada parametro sao verificados independentemente,
+	 * 						contrutor apenas relanca as exception.
 	 */
 	public Viagem(String local, String descricao, Date data, TipoDeViagem tipo,
 			List<Usuario> participantes) throws Exception {
@@ -240,23 +201,6 @@ public class Viagem implements Comparable<Viagem>{
 	 */
 	public boolean adicionarParticipante(String codigo, Usuario usuario){
 		return estrategia.adicionarParticipante(participantes, codigo, usuario);
-	}
-
-	/**
-	 * Muda o tipo da Viagem para Aberta
-	 * @throws Exception 
-	 */
-	public void mudarParaAberta() {
-		estrategia = new ViagemAberta();
-	}
-
-	/**
-	 * Muda tipo da viagem para Limitada.
-	 * @param codigo - codigo que torna limitada
-	 * @throws Exception - caso codigo seja null ou menor que 3 caracteres
-	 */
-	public void mudarParaLimitada(String codigo) throws Exception {
-		estrategia = new ViagemLimitada(codigo);
 	}
 
 	@Override

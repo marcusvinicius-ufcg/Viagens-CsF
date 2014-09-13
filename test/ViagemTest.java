@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import models.TipoDeViagem;
 import models.Usuario;
 import models.Viagem;
 import models.ViagemAberta;
@@ -17,7 +18,7 @@ import org.junit.Test;
 
 
 public class ViagemTest {
-	List<Usuario> participantesFake;
+	private List<Usuario> participantesFake;
 	private static GenericDAO dao = new GenericDAOImpl();
 	
 	private String alterDoChao;
@@ -30,6 +31,11 @@ public class ViagemTest {
 	private String pangongDesc;
 	private String ilha_de_Mauritius;
 	private String ilha_MauritiusDesc;
+	private String codigo;
+	private TipoDeViagem tipoDeViagemAberta;
+	private TipoDeViagem tipoDeViagemFechada;
+	
+	
 	
 	@Before
 	public void setUp(){
@@ -44,28 +50,71 @@ public class ViagemTest {
 		pangongDesc = "O lago Pangong Tso é de água salgada a 4.350 metros de altura, no coração do Himalaia. O ar rarefeito dá cores ainda mais bonitas às águas, criando efeito de pureza e intensidade. O lago é acessível através de uma trilha que começa na cidade indiana de Leh.";
 		ilha_de_Mauritius = "Ilha de Mauritius";
 		ilha_MauritiusDesc = "A Ilha de Mauritius é tão incrível que temos a ilusão visual de que abaixo das suas águas há uma grande cachoeira. O efeito óptico se dá graças às correntes e vegetação subaquáticas. O resultado é mágico.";
+		codigo = "12345";
+		tipoDeViagemAberta = new ViagemAberta();
+		try {
+			tipoDeViagemFechada =  new ViagemLimitada(codigo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
 	public void deveCriarViagem() {
-		// Testa a ciação de uma viagem aberta.
+		// Testa a criação de uma viagem ABERTA - usando os 2 construtores possíveis.
 		Viagem viagem = null;
-		try {
-			viagem = new Viagem(preikestolen_Noruega, preikestolenDesc, new Date(), participantesFake);
+		Viagem viagem2 = null;
+		
+		try {			
+			// a primeira viagem usa o construtor que nao define o tipo.
+			viagem = new Viagem(preikestolen_Noruega, preikestolenDesc, new Date(), tipoDeViagemAberta, participantesFake);
+			// a segunda viagem usa o construtor que define o tipo, nesse caso aberta.
+			viagem2 = new Viagem(preikestolen_Noruega, preikestolenDesc, new Date(), tipoDeViagemAberta,  participantesFake);
+				
 		} catch (Exception e) {
 			fail();
 		}
 		
-		// Testa o tipo de estrategia da vagem.
+		// Testa o tipo de estrategia da viagem. Nesse caso é aberta.
 		assertTrue(viagem.getEstrategia() instanceof ViagemAberta);
-		assertFalse(viagem.getEstrategia() instanceof ViagemLimitada);		
+		assertFalse(viagem.getEstrategia() instanceof ViagemLimitada);
+		assertTrue(viagem2.getEstrategia() instanceof ViagemAberta);
+		assertFalse(viagem2.getEstrategia() instanceof ViagemLimitada);	
+		
+		// Testa se a viagem é criada com 0 participantes.
+		assertEquals(0, viagem.countParticipantes());
+		assertEquals(0, viagem2.countParticipantes());
+		
+		viagem = null;
+		viagem2 = null;
+		// Testa a criação de uma viagem LIMITADA - usando os 2 construtores possíveis.
+		try {
+			// a primeira viagem usa o construtor que nao define o tipo.
+			viagem = new Viagem(alterDoChao, alterDoChaoDesc, new Date(),tipoDeViagemFechada, participantesFake);
+			// a segunda viagem usa o construtor que define o tipo, nesse caso fechada.
+			viagem2 = new Viagem(preikestolen_Noruega, preikestolenDesc, new Date(), tipoDeViagemFechada,  participantesFake);
+			
+		} catch (Exception e) {
+			fail();
+		}
+		
+		// Testa o tipo de estrategia da viagem. Nesse caso é limitada.
+		assertFalse(viagem.getEstrategia() instanceof ViagemAberta);
+		assertTrue(viagem.getEstrategia() instanceof ViagemLimitada);	
+		assertFalse(viagem2.getEstrategia() instanceof ViagemAberta);
+		assertTrue(viagem2.getEstrategia() instanceof ViagemLimitada);	
+		
+		// Testa se a viagem é criada com 0 participantes.
+		assertEquals(0, viagem.countParticipantes());
+		assertEquals(0, viagem2.countParticipantes());		
 	}
 	
 	@Test
 	public void deveLancarException() {
 		// Nome do local nulo
 		try {
-			new Viagem(null, Pangong_Tso_Himalaia, new Date(), participantesFake);
+			new Viagem(null, Pangong_Tso_Himalaia, new Date(), tipoDeViagemAberta, participantesFake);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Local nulo ou vazio!", e.getMessage());
@@ -73,15 +122,15 @@ public class ViagemTest {
 		
 		// Nome curto
 		try {
-			new Viagem("aa", Pangong_Tso_Himalaia, new Date(), participantesFake);
+			new Viagem("aa", Pangong_Tso_Himalaia, new Date(), tipoDeViagemAberta, participantesFake);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Local deve ter no Minimo 3 Caracteres!", e.getMessage());
 		}
 		
-		// Descrção nula
+		// Descrição nula
 		try {
-			new Viagem(ilha_de_Mauritius, null, new Date(), participantesFake);
+			new Viagem(ilha_de_Mauritius, null, new Date(), tipoDeViagemAberta, participantesFake);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Descrição Nula ou Vazia!", e.getMessage());
@@ -89,7 +138,7 @@ public class ViagemTest {
 		
 		// Descrição pequena demais
 		try {
-			new Viagem(ilha_de_Mauritius, "ej", new Date(), participantesFake);
+			new Viagem(ilha_de_Mauritius, "ej", new Date(), tipoDeViagemAberta,participantesFake);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Descrição deve ter no Minimo 3 Caracteres!", e.getMessage());
@@ -97,7 +146,7 @@ public class ViagemTest {
 		
 		// Data nula
 		try {
-			new Viagem(monteRoraima, monteRoraimaDesc, null, participantesFake);
+			new Viagem(monteRoraima, monteRoraimaDesc, null, tipoDeViagemAberta, participantesFake);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Data Nula ou Vazia!", e.getMessage());
@@ -108,7 +157,7 @@ public class ViagemTest {
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_WEEK, -1);
 			
-			new Viagem(alterDoChao, alterDoChaoDesc, calendar.getTime(), participantesFake);
+			new Viagem(alterDoChao, alterDoChaoDesc, calendar.getTime(), tipoDeViagemAberta,participantesFake);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Data já Ultrapassada!", e.getMessage());
@@ -116,7 +165,7 @@ public class ViagemTest {
 		
 		// Lista de participantes nula
 		try {
-			new Viagem(ilha_de_Mauritius, ilha_MauritiusDesc, new Date(), null);
+			new Viagem(ilha_de_Mauritius, ilha_MauritiusDesc, new Date(), tipoDeViagemAberta, null);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Coleção de Participantes Invalida!", e.getMessage());
@@ -124,69 +173,78 @@ public class ViagemTest {
 		
 		// Código nulo
 		try {
-			new Viagem(preikestolen_Noruega, preikestolenDesc, null, new Date(), participantesFake);
+			new Viagem(preikestolen_Noruega, preikestolenDesc, new Date(), new ViagemLimitada(""), participantesFake);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Código Nulo ou Vazio!", e.getMessage());
 		}
 		
-		// Código inválido
+		// Código inválido - tamanho menor que o minimo
 		try {
-			new Viagem(alterDoChao, alterDoChaoDesc, "12", new Date(),
-					participantesFake);
+			new Viagem(alterDoChao, alterDoChaoDesc, new Date(), new ViagemLimitada("12"), participantesFake);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Código deve ter no Minimo 3 Caracteres!", e.getMessage());
-		}
-				
-		// TESTES PARA ESTRATEGIA
+		}	
 		
-		Viagem v = null;		
-		try {
-			v = new Viagem(Pangong_Tso_Himalaia, pangongDesc, new Date(), participantesFake);
-		} catch (Exception e) {
-			fail();
-		}
-		
-		// Tenta setar a estrategia da viagem com um código nulo
-		try {
-			v.setEstrategia(new ViagemLimitada(null));
-			fail();
-		} catch (Exception e) {
-			assertTrue(v.getEstrategia() instanceof ViagemAberta);
-		}
-		
-		// Tenta setar a estrategia da viagem com um código inválido
-		try {
-			v.setEstrategia(new ViagemLimitada("12"));
-			fail();
-		} catch (Exception e) {
-			assertTrue(v.getEstrategia() instanceof ViagemAberta);
-		}
 	}
 	
 	@Test
 	public void testaTrocaDeEstrategia(){
-		Viagem v = null;
+		// Crio uma viagem aberta
+		Viagem viagem = null;		
 		try {
-			v = new Viagem(Pangong_Tso_Himalaia, pangongDesc, new Date(), participantesFake);
+			viagem = new Viagem(Pangong_Tso_Himalaia, pangongDesc, new Date(), tipoDeViagemAberta, participantesFake);
+		} catch (Exception e) {
+			fail();
+		}
+
+		// Tenta setar a estrategia da viagem com um código nulo
+		try {
+			viagem.setEstrategia(new ViagemLimitada(null));
+			fail();
+		} catch (Exception e) {
+			// testo se a estrategia se mantem aberta.
+			assertTrue(viagem.getEstrategia() instanceof ViagemAberta);
+		}
+
+		// Tenta setar a estrategia da viagem com um código inválido
+		try {
+			viagem.setEstrategia(new ViagemLimitada("12"));
+			fail();
+		} catch (Exception e) {
+			// testo se a estrategia se mantem aberta.
+			assertTrue(viagem.getEstrategia() instanceof ViagemAberta);
+		}		
+		
+		// Muda a estrategia da viagem para LIMITADA
+		try {
+			viagem.setEstrategia(new ViagemLimitada(codigo));
+		} catch (Exception e) {
+			fail();
+		}	
+		
+		assertTrue(viagem.getEstrategia() instanceof ViagemLimitada);
+		
+		// Muda a estrategia da viagem para LIMITADA novamente
+		try {
+			viagem.setEstrategia(new ViagemLimitada(codigo));
 		} catch (Exception e) {
 			fail();
 		}
 		
-		assertTrue(v.getEstrategia() instanceof ViagemAberta);
+		// testa se mantem limitada.
+		assertTrue(viagem.getEstrategia() instanceof ViagemLimitada);
 		
-		// Muda a estrategia da viagem
-		try {
-			v.setEstrategia(new ViagemLimitada("12345"));
-		} catch (Exception e) {
-			fail();
-		}
+		// Muda a estrategia da viagem para ABERTA
+		viagem.setEstrategia(new ViagemAberta());
+		assertTrue(viagem.getEstrategia() instanceof ViagemAberta);
 		
-		assertTrue(v.getEstrategia() instanceof ViagemLimitada);
+		// Muda a estrategia da viagem para ABERTA novamente
+		viagem.setEstrategia(new ViagemAberta());
+		// testa se mantem aberta.
+		assertTrue(viagem.getEstrategia() instanceof ViagemAberta);		
 		
-		v.setEstrategia(new ViagemAberta());
-		assertTrue(v.getEstrategia() instanceof ViagemAberta);
 	}
 	
 	@Test
@@ -197,26 +255,26 @@ public class ViagemTest {
 		
 		Viagem viagem = null;
 		try {
-			viagem = new Viagem(ilha_de_Mauritius, ilha_MauritiusDesc, new Date(), new ArrayList<Usuario>());
+			viagem = new Viagem(ilha_de_Mauritius, ilha_MauritiusDesc, new Date(), tipoDeViagemAberta, new ArrayList<Usuario>());
 		} catch (Exception e) {
 			fail();
 		}
 		
-		Usuario u = null;
+		Usuario usuario = null;
 		try {
-			u = new Usuario("fulano", "fulano@gmail.com", "123456");
+			usuario = new Usuario("fulano", "fulano@gmail.com", "123456");
 		} catch (Exception e) {
 			fail();
 		}
 		
 		
-		viagem.adicionarParticipante("", u);
+		viagem.adicionarParticipante("", usuario);
 		assertEquals(1, viagem.countParticipantes());
 		
 		// Um usuario não deve ser inserido mais de uma vez.
-		viagem.adicionarParticipante("", u);
-		viagem.adicionarParticipante("", u);
-		viagem.adicionarParticipante("", u);
+		viagem.adicionarParticipante("", usuario);
+		viagem.adicionarParticipante("", usuario);
+		viagem.adicionarParticipante("", usuario);
 		assertEquals(1, viagem.countParticipantes());
 	}
 	
@@ -224,7 +282,7 @@ public class ViagemTest {
 	public void testaParticipacoesEmViagemLimitada(){
 		Viagem viagem = null;
 		try {
-			viagem = new Viagem(monteRoraima, monteRoraimaDesc, "098765", new Date(), new ArrayList<Usuario>());
+			viagem = new Viagem(monteRoraima, monteRoraimaDesc, new Date(), new ViagemLimitada("098765"), new ArrayList<Usuario>());
 		} catch (Exception e) {
 			fail();
 		}
@@ -262,10 +320,10 @@ public class ViagemTest {
 		
 		// INSERÇÃO
 		try {
-			v1 = new Viagem(alterDoChao, alterDoChaoDesc, new Date(), participantesFake);
-			v2 = new Viagem(monteRoraima, monteRoraimaDesc, new Date(), participantesFake);
-			v3 = new Viagem(alterDoChao, alterDoChaoDesc, "123456", new Date(), participantesFake);
-			v4 = new Viagem(monteRoraima, monteRoraimaDesc, "654321", new Date(), participantesFake);
+			v1 = new Viagem(alterDoChao, alterDoChaoDesc, new Date(), tipoDeViagemAberta, participantesFake);
+			v2 = new Viagem(monteRoraima, monteRoraimaDesc, new Date(),tipoDeViagemAberta, participantesFake);
+			v3 = new Viagem(alterDoChao, alterDoChaoDesc, new Date(),new ViagemLimitada("123456"), participantesFake);
+			v4 = new Viagem(monteRoraima, monteRoraimaDesc, new Date(), new ViagemLimitada("654321"), participantesFake);
 			
 			// testa a persistência.
 			dao.persist(v1);	dao.persist(v2);
@@ -344,8 +402,8 @@ public class ViagemTest {
 		Viagem v2;
 		
 		try {
-			v1 = new Viagem(alterDoChao, alterDoChaoDesc, new Date(), participantesFake);
-			v2 = new Viagem(alterDoChao, alterDoChaoDesc, "123456", new Date(), participantesFake);
+			v1 = new Viagem(alterDoChao, alterDoChaoDesc, new Date(), tipoDeViagemAberta, participantesFake);
+			v2 = new Viagem(alterDoChao, alterDoChaoDesc, new Date(), new ViagemLimitada("123456"), participantesFake);
 			
 			dao.persist(v1);	dao.persist(v2);			
 			List<Viagem> viagenDoBD = dao.findAllByClassName("Viagem");

@@ -42,7 +42,7 @@ public class ViagemLimitada extends TipoDeViagem{
 	
 	@Override
 	public boolean adicionarParticipante(Collection<Usuario> participantes, String codigo, Usuario usuario) {
-		//verificando se codigo sao iguais
+		//verificando se codigo sao iguais e se participantes nao esta na lista
 		if(this.codigo.equals(codigo) && !participantes.contains(usuario)){
 			return participantes.add(usuario);
 		}else{
