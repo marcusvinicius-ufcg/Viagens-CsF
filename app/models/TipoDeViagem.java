@@ -52,7 +52,7 @@ public abstract class TipoDeViagem {
 	 */
 	public abstract boolean adicionarParticipante(Collection<Usuario> participantes, Solicitacao solicitacao);
 	
-	abstract String getCodigo();
+	public abstract String getCodigo();
 	
 	@Override
 	public abstract String toString();

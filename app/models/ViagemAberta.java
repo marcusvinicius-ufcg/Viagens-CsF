@@ -62,7 +62,7 @@ public class ViagemAberta extends TipoDeViagem{
 	}
 
 	@Override
-	protected String getCodigo() {
+	public String getCodigo() {
 		throw new UnsupportedOperationException("Viagem Aberta Não Possui Código.");
 	}
 }

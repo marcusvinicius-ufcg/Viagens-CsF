@@ -41,5 +41,4 @@ public class SolicitacaoTest {
 		
 		assertTrue(limitada.getUsuario().equals(usuario));
 	}
-
 }
